@@ -9,6 +9,7 @@ $factory->define(Room::class, function (Faker $faker) {
     $room_type = collect(['Basic','Deluxe Double','Executive Double','Family']);
     $floor = collect(['First','Second','Third','Fourth','Fifth','Sixth']);
     $status = collect([0,1,2,3]);
+
     return [
         //
         'room_type' => $room_type->random(),
