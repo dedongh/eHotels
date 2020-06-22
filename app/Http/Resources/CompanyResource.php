@@ -26,6 +26,7 @@ class CompanyResource extends JsonResource
                 'twitter' => config('company.social_twitter'),
                 'linkedIn' => config('company.social_linkedin'),
                 'website' => config('company.website'),
+                'about' => config('company.about'),
 
             ]
 

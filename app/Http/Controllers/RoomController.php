@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RoomCollection;
+use App\Http\Resources\RoomResource;
 use App\Model\Room;
 use Illuminate\Http\Request;
 
@@ -15,6 +17,8 @@ class RoomController extends Controller
     public function index()
     {
         //
+        $room = Room::paginate();
+        return new RoomCollection($room);
     }
 
     /**
@@ -47,6 +51,7 @@ class RoomController extends Controller
     public function show(Room $room)
     {
         //
+        return new RoomResource($room);
     }
 
     /**
@@ -81,5 +86,12 @@ class RoomController extends Controller
     public function destroy(Room $room)
     {
         //
+        $room->delete();
+        return response('Room deleted successfully',204);
+    }
+
+    public function show_room_status()
+    {
+
     }
 }

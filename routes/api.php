@@ -18,7 +18,12 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
     Route::get('/admin', function (Request $request) {
         return $request->user();
     });
+    Route::delete('room/{room}', 'RoomController@destroy');
+});
 
+Route::prefix('v1')->group(function () {
+    Route::get('rooms', 'RoomController@index');
+    Route::get('room/{room}', 'RoomController@show');
 });
 
 Route::get('/about', 'CompanyController@index');
