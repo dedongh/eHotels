@@ -24,6 +24,8 @@ class RoomResource extends JsonResource
                 'num_of_persons' => $this->num_of_persons,
                 'rate_per_night' => config('company.currency_symbol'). $this->rate_per_night,
                 'status' =>$this->status($this->status),
+                'book_now' => route('room.book', $this->id),
+
             ]
         ];
     }

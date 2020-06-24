@@ -30,7 +30,7 @@ class CreateBookingsTable extends Migration
             $table->decimal('additional_charges',8,2)->default(0);
             $table->decimal('total',8,2)->default(0);
             $table->decimal('amount_paid',8,2)->default(0);
-            $table->decimal('Balance',8,2)->default(0);
+            $table->decimal('balance',8,2)->default(0);
             $table->string('notes')->nullable();
             $table->bigInteger('room_id')->unsigned();
             $table->foreign('room_id')->references('id')

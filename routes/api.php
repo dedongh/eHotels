@@ -19,6 +19,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         return $request->user();
     });
     Route::delete('room/{room}', 'RoomController@destroy');
+    Route::patch('room/{room}', 'RoomController@update');
     Route::post('rooms', 'RoomController@store');
 });
 
@@ -26,6 +27,10 @@ Route::prefix('v1')->group(function () {
     Route::get('rooms', 'RoomController@index');
     Route::get('room/{room}', 'RoomController@show');
     Route::get('test', 'RoomController@show_room_status');
+
+    Route::apiResource('bookings','BookingController');
+
+    Route::post('booking/{id}/room', 'BookingController@book_now')->name('room.book');
 });
 
 Route::get('/about', 'CompanyController@index');

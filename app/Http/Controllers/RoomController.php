@@ -14,11 +14,36 @@ class RoomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $room = Room::paginate();
-        return new RoomCollection($room);
+
+        if ($request->has('type')) {
+            $type = $request->type;
+            switch ($type) {
+                case 'available':{
+                    $room = Room::AvailableRooms()->get();
+                    return new RoomCollection($room);
+                }
+                case 'booked':{
+                    $room = Room::BookedRooms()->get();
+                    return new RoomCollection($room);
+                }
+                case 'reserved':{
+                    $room = Room::ReservedRooms()->get();
+                    return new RoomCollection($room);
+                }
+            }
+
+        }else if ($request->has('room_type')){
+            $room_type = $request->room_type;
+            $room = Room::RoomType($room_type)->get();
+            return new RoomCollection($room);
+        }
+        else{
+            $room = Room::paginate();
+            return new RoomCollection($room);
+        }
     }
 
     /**
@@ -94,6 +119,9 @@ class RoomController extends Controller
     public function update(Request $request, Room $room)
     {
         //
+        $room->update($request->input());
+
+        return new RoomResource($room);
     }
 
     /**

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BookingCollection;
+use App\Http\Resources\BookingResource;
 use App\Model\Booking;
+use App\Model\Room;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -15,6 +18,8 @@ class BookingController extends Controller
     public function index()
     {
         //
+        $bookings = Booking::paginate();
+        return new BookingCollection($bookings);
     }
 
     /**
@@ -47,6 +52,7 @@ class BookingController extends Controller
     public function show(Booking $booking)
     {
         //
+        return new BookingResource($booking);
     }
 
     /**
@@ -81,5 +87,64 @@ class BookingController extends Controller
     public function destroy(Booking $booking)
     {
         //
+        $booking->delete();
+        return response('Booking deleted successfully',204);
+    }
+
+    public function book_now(Request $request, $id)
+    {
+        $room = Room::findOrFail($id);
+
+        $room_number = $room->room_number;
+        $rate_per_night = $room->rate_per_night;
+
+        if ($room->status != 0) {
+            return response()->json([
+                'message' => 'room is either booked or reserved'
+            ], 422);
+        }
+
+        $total = $request->days_spent * $rate_per_night;
+        $balance = $request->amount_paid - $total;
+
+        $this->validate($request, [
+            'name' => 'required',
+            'phone' => 'required',
+            'arrival' => 'required',
+            'checkout' => 'required',
+            'amount_paid' => 'gte:'.$total,
+        ]);
+
+
+
+
+        $booking = Booking::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'country' => $request->country,
+            'address' => $request->address,
+            'car_number' => $request->car_number,
+            'arrival' => $request->arrival,
+            'checkout' => $request->checkout,
+            'days_spent' => $request->days_spent,
+            'no_of_adults' => $request->no_of_adults,
+            'no_of_children' => $request->no_of_children,
+            'room_number' => $room_number,
+            'rate_per_night' => $rate_per_night,
+            'additional_charges' => $request->additional_charges,
+            'total' => $total,
+            'amount_paid' => $request->amount_paid,
+            'balance' => $balance,
+            'notes' => $request->notes,
+            'room_id' => $room->id
+
+        ]);
+
+        $update = Room::where('id', $id)->update([
+            'status' => 1
+        ]);
+
+
+        return new BookingResource($booking);
     }
 }
